@@ -1,0 +1,41 @@
+0. Crear imagenes
+-----------------
+0.1 docker build -t nombre_imagen
+
+I. Configuracion básica
+-------------------------
+1.1. Creas la red
+docker network create my-network
+
+1.2. creas el repo de mongodb
+docker run -d --name mongodb --network my-network mongo
+
+1.3. creas el contenedor de la api (fastapi)
+docker run -p 8001:8001 --name my-app --network my-network myapp
+
+II. opcion de enlazar los repo por nombre
+------------------------------------------------
+
+2.1 docker run -d --name mongodb mongo
+
+2.2. docker run -p 8001:8001 --link mongodb myapp
+
+III. guardar/exportar imagenes
+-------------------
+3.1 docker save -o nombre_archivo_imagen.tar nombre_imagen
+
+ejemplo:
+docker save -o mongo.tar mongo
+
+IV. importar imagenes
+--------------------
+4.1 docker load -i nombre_archivo_imagen.tar
+
+ejemplo
+docker load -i mongo.tar
+
+V. Extras
+---------
+5.1 ingresar a shell mongodb
+ejemplo:
+docker container exec -it mongodb /bin/bash
