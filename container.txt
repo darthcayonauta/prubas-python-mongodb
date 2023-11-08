@@ -1,6 +1,6 @@
 0. Crear imagenes
 -----------------
-0.1 docker build -t nombre_imagen
+0.1 docker build -t nombre_imagen .
 
 I. Configuracion básica
 -------------------------
@@ -39,3 +39,41 @@ V. Extras
 5.1 ingresar a shell mongodb
 ejemplo:
 docker container exec -it mongodb /bin/bash
+
+VI. Importar / Exportar datos desde mongodb hacia otro server
+-------------------------------------------------------------
+6.1 Exportar (ejemplo, las rutas o path pueden cambiar)
+6.1.1 docker exec -it nombre_container_mongodb mongodump --out /home/user/bak
+6.1.2 docker cp nombre_container_mongodb:/home/user/bak /home/user/bak
+
+haz un ls en /home/user/bak , si ves que no está vacío está todo ok
+
+6.2 enviar contenido/respaldo a otro server
+scp -r /home/user/bak user@x.x.x.x:/home/user/bak
+
+6.3 Importar
+6.3.1 nos vamos al otro servidor 
+ssh -l user x.x.x.x (donde x.x.x.x corresponde a una ip, siempre y cuando server tenga SSH)
+
+6.3.2 nos vamos al folder dentro del nuevo server
+cd /home/user/bak
+
+6.3.3 creamos un nuevo container basado en mongodb, integrando su folder de respaldo
+docker run -d --name nombre_container --network my-network -v /home/user/bak:backup mongo
+
+6.3.4 ingresamos al entorno del contenedor
+docker exec -it nombre_container /bin/bash
+
+6.3.5 verificamos si la carpeta "backup" está en el entorno
+ls , si aparece esta todo ok
+
+6.3.6 importamos la info (todavía dentro del entorno del container)
+mongorestore backup, si no funciona mongorestore backup/database_name
+
+6.3.7 comprobamos:
+dentro del entorno del contenedor escribimos mongosh
+escribimos show databases y si aparece la db , es que está todo ok
+
+6.3.8 activamos el contendor
+salimos del entorno , con  el comando exit y escribimos en linea de comandos 
+docker start nombre_container, y con eso bastaría para ejecutarlo
