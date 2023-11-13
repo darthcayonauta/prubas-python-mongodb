@@ -68,7 +68,7 @@ docker exec -it nombre_container /bin/bash
 ls , si aparece esta todo ok
 
 6.3.6 importamos la info (todavía dentro del entorno del container)
-mongorestore backup, si no funciona mongorestore backup/database_name
+mongorestore backup, si no funciona escribes => mongorestore backup/database_name
 
 6.3.7 comprobamos:
 dentro del entorno del contenedor escribimos mongosh
